@@ -1,0 +1,93 @@
+###########################################
+# Syntax Coloring Map For DS3231
+###########################################
+
+###########################################
+# Datatypes (KEYWORD1)
+###########################################
+
+DS3231	KEYWORD1
+Time	KEYWORD1
+Date	KEYWORD1
+
+
+###########################################
+# clock Library constants
+###########################################
+
+RTC_OK	LITERAL1
+RTC_RD_ERR	LITERAL1
+RTC_TM_RD_ERR	LITERAL1
+RTC_DT_RD_ERR	LITERAL1
+RTC_ST_RD_ERR	LITERAL1
+RTC_AL_RD_ERR	LITERAL1
+RTC_SET_ERR	LITERAL1
+RTC_WR_ERR	LITERAL1
+RTC_TM_WR_ERR	LITERAL1
+RTC_DT_WR_ERR	LITERAL1
+RTC_ST_WR_ERR	LITERAL1
+RTC_AL_WR_ERR	LITERAL1
+
+# century, in date.mo byte
+CN 	LITERAL1
+# alarm enables
+A1M1	LITERAL1
+A1M2	LITERAL1
+A1M3	LITERAL1
+A1M4	LITERAL1
+A2M2	LITERAL1
+A2M3	LITERAL1
+A2M4	LITERAL1
+DY_DT	LITERAL1
+# control/status
+EOSC	LITERAL1
+BBSQW	LITERAL1
+CONV	LITERAL1
+RS2	LITERAL1
+RS1	LITERAL1
+INTCN	LITERAL1
+A2IE	LITERAL1
+A1IE	LITERAL1
+OSF	LITERAL1
+EN32KHZ	LITERAL1
+BSY	LITERAL1
+A2F	LITERAL1
+A1F	LITERAL1
+ALARM1SIZE	LITERAL1
+ALARM2SIZE	LITERAL1
+DSSTATUS	LITERAL1
+DSSTATMP	LITERAL1
+
+yr	LITERAL1
+mo	LITERAL1
+dow	LITERAL1
+dom	LITERAL1
+hr	LITERAL1
+min	LITERAL1
+sec	LITERAL1
+
+###########################################
+# Methods and Functions (KEYWORD2)
+###########################################
+
+begin	KEYWORD2
+getTime	KEYWORD2
+getDate	KEYWORD2
+getStatus	KEYWORD2
+getAlarm	KEYWORD2
+
+setTime	KEYWORD2
+setDate	KEYWORD2
+setStatus	KEYWORD2
+setAlarm	KEYWORD2
+
+
+###########################################
+# objects created in the example sketches.
+###########################################
+
+clk	KEYWORD3
+clk2	KEYWORD3
+time	KEYWORD3
+date	KEYWORD3
+
