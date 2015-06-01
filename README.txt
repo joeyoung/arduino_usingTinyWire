@@ -15,3 +15,23 @@ version, and the DS3231 clock library switches to TinyWire when compiled with
 an ATtiny board selection.
 
 
+May 31/15
+
+The library LCDBarCentreZero_I2C is tested with the TinyWireM liquid crystal 
+library and works without modification - the example sketch fourBarsI2Ctw 
+required changing only the #include from <Wire.h> to <TinyWireM.h>
+
+The DS3231 clock library and Keypad_tw library were headed for an ATtiny85 
+clock which could be set with a keypad. However, the combined libraries with the
+clock display and keypad setting functions occupy about 9.9K of memory on the
+standard arduino. I put it into the ATtiny anyway, and it just fit--using
+8112 bytes. Still, the program did not work. Some investigation to find out
+the size of used read-write memory indicates that the program clocDispDS_kpd
+(in standard arduino) is using at least 688 bytes of rwm. Similar separate
+tests of clockDispDStw and getKeyLcdtw find rwm use 242 and 282, respectively.
+So even though the program code for the combined clock, display, and keypad
+fits, there is not enough rwm in the ATtiny85 to run.
+
+The keypad--display combination for data entry is illustrated with example 
+getKeyLcd. Its size is about 5K in the tinywire version.
+

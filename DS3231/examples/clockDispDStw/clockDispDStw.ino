@@ -15,7 +15,10 @@
 //          Mar 17/14 - DS version with alarm1 flashing
 //          Mar 18/14 - PCF version
 //          Apr 30/15 - TinyWire version
-
+//          May 29/15 - Move alarm flashing to tiny pin 1
+//          May 30/15 - obtain count of processor's msec in one sec
+//                       - doesn't work...I2C reads interfere?
+//                       - try resetting form of timer - ok one uP
 
 //#include <Wire.h> 
 #include "TinyWireM.h" // include instead of Wire if ATtiny85 or ATtiny2313
@@ -32,9 +35,10 @@
 #define LCD_LINS 2    //   and 2 line display
 
 LiquidCrystal_I2C lcd( LCD_ADR, LCD_CHRS, LCD_LINS );
-flashPin pin13;
+//flashPin pin13;
+flashPin pin1( 1, LOW, 500 );  //use D1 for ATtiny85
 
-unsigned long sectick;
+unsigned long sectick, secintvl;
 byte seconds = 0;
 #ifdef PCF8563_HDR
 PCF8563 clk;
@@ -51,7 +55,7 @@ byte status[5];
 
 void putTime( Time & );
 void putDate( Date & );
-const char *ver_str = "Clk 0.9";
+const char *ver_str = "Clk tw1";
 
 void setup( ) {
   lcd.init();                      // initialize the lcd, wire libs
@@ -62,8 +66,15 @@ void setup( ) {
     while( seconds == time.sec ) {
       clk.getTime( time );
     } // wait for clock chip to change
+//    secintvl = millis( );    // measure the 'second' in msec
+//    seconds = time.sec;
+//    while( seconds == time.sec ) {
+//      clk.getTime( time );
+//    } // wait for clock chip to change
+//    secintvl = millis( ) - secintvl;  //doesn't work I2C reads block??
   } // if clock read is ok
-  sectick = millis( ) + 1000L;
+//  sectick = millis( ) + 1015UL;  // wait extra ticks
+  sectick = millis( );  // use resetting form of timer
   clk.getTime( time );
   putTime( time );
   clk.getDate( date );
@@ -95,17 +106,22 @@ boolean alarmFlashing = false;
 
 void loop()
 {
-  pin13.flashOff( );
+//  pin13.flashOff( );
+  pin1.flashOff( );
 
-  if( sectick < millis( ) ) {
-    sectick += 1000L;
+//  if( sectick < millis( ) ) {
+//    sectick += 1015L;
+//    sectick = secintvl;  // doesn't work
+  if( millis( ) - sectick > 1050UL ) {     // allow 5 percent err
+    sectick = millis( );
     time.sec++;
     if( ( time.sec & 0x0f ) > 9 ) {
       time.sec &= 0xf0;
       time.sec += 0x10;
     }
 
-    if( alarmFlashing && time.sec <= 0x15 ) pin13.flash( );
+//    if( alarmFlashing && time.sec <= 0x15 ) pin13.flash( );
+    if( alarmFlashing && time.sec <= 0x15 ) pin1.flash( );
     
     if( time.sec == 0x60 ) {
       clk.getTime( time );
@@ -119,7 +135,8 @@ void loop()
       if( status[1] & (1<<AF) ) {
         status[1] &= ~(1<<AF);
         clk.setStatus( PCSTATUS, 2, status );
-        pin13.flash( );
+//        pin13.flash( );
+        pin1.flash( );
         alarmFlashing = true;
       } else {
         alarmFlashing = false;
@@ -132,7 +149,8 @@ void loop()
       putTemp( &temp );
       clk.getStatus( RVSTAT2, status+2 );
       if( status[2]&(1<<AF) ) {  // check alarm
-        pin13.flash( );
+//        pin13.flash( );
+        pin1.flash( );
         status[2] &= ~(1<<AF);  // clear AF
         clk.setStatus( RVSTAT2, status[2] );
         alarmFlashing = true;
@@ -145,7 +163,8 @@ void loop()
       putTemp( status );
       clk.getStatus( DSSTATUS, 2, status );
       if( status[1]&(1<<A1F) ) { //check alarm1
-        pin13.flash( );
+//        pin13.flash( );
+        pin1.flash( );
         status[1] &= ~(1<<A1F);  // clear A1F
         clk.setStatus( DSSTATUS+1, status[1] );
         alarmFlashing = true;
